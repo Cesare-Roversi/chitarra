@@ -6,7 +6,7 @@ import os
 from spartito import Spartito_chitarra, Nota
 from generatore import Generatore
 
-def show(s):
+def cv2_show(s):
     subsurf_array = pygame.surfarray.array3d(s)  # shape: (w, h, 3)
     subsurf_array = np.transpose(subsurf_array, (1, 0, 2))  # swap axes (w,h) -> (h,w)
     subsurf_array = cv2.cvtColor(subsurf_array, cv2.COLOR_RGB2BGR)  # pygame is RGB, cv2 expects BGR
@@ -40,9 +40,19 @@ clock = pygame.time.Clock()
 # pr:Nota = list_note[2][0]
 # pr.bend = 0.3
 #*_OLD
-            
 
-for i in range(2):
+#crea cartelle
+try:
+    os.makedirs(os.path.join("dataset", "images", "train"), exist_ok=True)
+    os.makedirs(os.path.join("dataset", "images", "val"), exist_ok=True)
+    os.makedirs(os.path.join("dataset", "labels", "train"), exist_ok=True)
+    os.makedirs(os.path.join("dataset", "labels", "val"), exist_ok=True)
+    print("Cartelle create con successo (o già presenti).")
+except OSError as e:
+    # Cattura qualsiasi altro errore di sistema che potrebbe verificarsi
+    print(f"Errore durante la creazione delle cartelle: {e}")
+
+for i in range(200):
     list_note = Generatore()
     min_x, max_x = 0, 1000 #W spartito = 1400, lasci 400 min
     min_y, max_y = 50, 100
@@ -77,9 +87,9 @@ for i in range(2):
     spartito.show(screen)
     pygame.display.flip()
     subsurf = screen.subsurface(screenshot_rect)
-    show(subsurf)
+    #cv2_show(subsurf)
 
-    cartella = "train"
+    cartella = "val"
     label_path = os.path.join("dataset", "labels", cartella, f"{i}.txt")
     with open(label_path, "w") as f:
         for n in list_inside_screenshot:
@@ -95,6 +105,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    clock.tick(60)
+    clock.tick(30)
 
 pygame.quit()
