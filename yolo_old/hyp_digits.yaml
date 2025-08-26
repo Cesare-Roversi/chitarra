@@ -1,0 +1,4 @@
+mosaic: 0.9
+mixup: 0.2
+copy_paste: 0.2
+shear: 2.0
