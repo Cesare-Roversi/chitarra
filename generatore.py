@@ -15,7 +15,7 @@ def find_next(lista_note, ix, corda):
     return None
 
 def Generatore():
-    LEN = 40 #gruppi verticali
+    LEN = 80 #gruppi verticali
     N_FRET = 30
 
     lista_note = []

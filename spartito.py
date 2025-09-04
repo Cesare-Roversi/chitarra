@@ -81,11 +81,9 @@ def aarc(surface, color, rect, start_angle, end_angle, width=1, steps=60):
 
 class Debug_rect():
     def build(self, screen, bbox):
-        #print(f"bbox: {bbox}")
         self.rect = pygame.Rect(bbox[0], bbox[1], bbox[2], bbox[3])
         self.color = (0, 0, 255, 128)
         self.is_show = True
-        #print(f"res {(self.rect.width, self.rect.height)}")
 
     def show(self, screen):
         if(self.is_show):
@@ -107,22 +105,26 @@ class Nota():
         self.dest_slide = dest_slide
         self.bend = bend
 
-    def build(self, screen, x, y):#visuale
+    def build(self, screen, x, y, font_size = 30):#visuale
         self.screen = screen
 
-        self.x = x #il centro del testo
-        self.y = y #il centro del testo
+        self.center_x = x #il centro del testo
+        self.center_y = y #il centro del testo
 
         self.spartito:Spartito_chitarra = None #la riga dello spartito a cui appartiene
-
         self.padding = 5
-        self.font = pygame.font.SysFont(None, 30)
+        self.font = pygame.font.SysFont(None, font_size)
         self.text_surface = self.font.render(str(self.tasto), True, (0, 0, 0))
-        self.rect_behind = self.text_surface.get_rect(center=(x,y))
-        self.rect_behind.width += self.padding*normX(screen)
-        self.rect_behind.height += self.padding*normY(screen)
-        self.rect_behind.center = (x,y)
         self.text_rect = self.text_surface.get_rect(center=(x,y))
+        
+        left_i, top_i, width_i, height_i = self.get_bbox()
+        width_i += self.padding*normX(screen)
+        self.rect_behind = pygame.Rect(left_i, top_i, width_i, height_i)
+        self.rect_behind.center = (self.center_x, self.center_y)
+        # self.rect_behind = self.text_surface.get_rect(center=(x,y))
+        # self.rect_behind.width += self.padding*normX(screen)
+        # self.rect_behind.height += self.padding*normY(screen)
+        # self.rect_behind.center = (x,y)
 
         #debug rect
         bbox = self.get_bbox()
@@ -220,11 +222,10 @@ class Arco():
     def build(self, screen, nota1:"Nota", nota2:"Nota"):
         self.nota1 = nota1
         self.nota2 = nota2
-        self.sx = nota1.x
+        self.sx = nota1.center_x
         self.sy = nota1.get_bbox()[1] -3
-        self.ex = nota2.x
+        self.ex = nota2.center_x
         self.ey = nota2.get_bbox()[1] -3
-        #print(nota1.get_bbox())
 
         if(nota1.get_depth() == nota2.get_depth()):
             height = 20
@@ -234,7 +235,6 @@ class Arco():
         else:
             pass
             #todo NON ho voglia
-        #print(f"self.sx: {self.sx} self.sy: {self.sy} + self.ex: {self.ex} + self.ey: {self.ey}")
     
     def show(self, screen):
         if(self.nota1.get_depth() == self.nota2.get_depth()): #todo rimuovere quando fixi ^
@@ -299,7 +299,15 @@ class Bend():
         screen.blit(self.text_surface, self.text_rect)
 
 
+class RedDot():
+    def __init__(self, x, y, radius):
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.color = (255, 0, 0)  # Red color
 
+    def show(self, screen):
+        pygame.draw.circle(screen, self.color, (self.x, self.y), self.radius)
 
 
 class Spartito_chitarra():
@@ -310,10 +318,11 @@ class Spartito_chitarra():
     def build(self, screen, x, y, width):
         #parametri visuali
         screen_width, screen_height = screen.get_size()
-        distanza_tra_corde = 20*normY(screen)
-        distanza_tra_note = 20*normX(screen)
-        distanza_separatore = 40*normX(screen)
+        distanza_tra_corde = 10*normY(screen) #MID = 10
+        distanza_tra_note = 15*normX(screen) #MID = 15
+        distanza_separatore = 30*normX(screen) #MID = 30
         distanza_tra_spartiti = 100*normY(screen)
+        font_size = 30 #!font size
         self.x = x #angolo in alto a sx spartito
         self.y = y #
         self.width = width
@@ -333,7 +342,6 @@ class Spartito_chitarra():
             note_contemporanee:Nota
             count_durata_note += note_contemporanee[0].durata
             if(count_durata_note > self.tempo):
-                #print(f"x_relativa: {x_relativa}")
                 count_durata_note = 0
                 sep = Separatore() 
                 x_relativa += distanza_separatore
@@ -352,7 +360,7 @@ class Spartito_chitarra():
             x_relativa += distanza_tra_note
             for nota in note_contemporanee: #add Note objects
                 y_nota = y_relativa + distanza_tra_corde*(nota.corda-1)
-                nota.build(screen, x_relativa, y_nota)
+                nota.build(screen, x_relativa, y_nota, font_size)
                 nota.spartito = linee
                 self.list_figli.append(nota)
             x_relativa += distanza_tra_note
@@ -361,10 +369,6 @@ class Spartito_chitarra():
         for note in self.list_note:
             for nota in note:
                 nota:Nota
-                # bbox = nota.get_bbox()
-                # d = Debug_rect() #debug
-                # d.build(screen, bbox)
-                # self.list_figli.append(d)
                 if(nota.dest_arco != None):
                     arco = Arco()
                     arco.build(screen, nota, nota.dest_arco)
@@ -380,7 +384,7 @@ class Spartito_chitarra():
                     bend.build(screen, nota, nota.bend)
                     self.list_figli.append(bend)
 
-
+        #self.list_figli.append(RedDot(50,500,30))
 
 
     def show(self, screen):

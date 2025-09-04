@@ -16,8 +16,8 @@ def cv2_show(s):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-WIDTH = 1500
-HEIGHT = int(WIDTH/16*9)
+WIDTH = 2560
+HEIGHT = 1440
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
@@ -52,22 +52,29 @@ except OSError as e:
     # Cattura qualsiasi altro errore di sistema che potrebbe verificarsi
     print(f"Errore durante la creazione delle cartelle: {e}")
 
-for i in range(200):
-    list_note = Generatore()
-    min_x, max_x = 0, 1000 #W spartito = 1400, lasci 400 min
+SAVE = True
+SHOW = False
+if(SAVE and SHOW):
+    exit(104)
+    
+for i in range(500):
+    #*SCREENSHOT SETTINGS
+    min_x, max_x = 0, 60 #LONG = 60
     min_y, max_y = 50, 100
     sx_shot = rand.randint(min_x, max_x)
     sy_shot = rand.randint(min_y, max_y)
 
-    width_shot = rand.randint(100, 1450 - sx_shot)
+    width_shot = rand.randint(100, WIDTH - sx_shot)
     height_shot = rand.randint(150, 250)
+    width_shot = WIDTH - sx_shot #todo COMMENT - LONG ONLY
     ex_shot = sx_shot+width_shot
     ey_shot = sy_shot+height_shot
-
     screenshot_rect = pygame.Rect(sx_shot, sy_shot, width_shot, height_shot)
+    
     #builds everything
+    list_note = Generatore()
     spartito = Spartito_chitarra(list_note=list_note)
-    spartito.build(screen, 50, 100, WIDTH - 100)
+    spartito.build(screen, 50, 100, WIDTH - 50)
 
     #trova la lista di note nello screen    
     list_inside_screenshot = []
@@ -82,22 +89,27 @@ for i in range(200):
                 n.set_debug_rect_color((255,0,0,128))
                 n.show_debug_rect(False)
 
+
     #pygame show
     screen.fill((255,255,255))
     spartito.show(screen)
     pygame.display.flip()
     subsurf = screen.subsurface(screenshot_rect)
-    #cv2_show(subsurf)
+    if(SHOW):
+        cv2_show(subsurf)
 
-    cartella = "val"
-    label_path = os.path.join("dataset", "labels", cartella, f"{i}.txt")
-    with open(label_path, "w") as f:
-        for n in list_inside_screenshot:
-            n:Nota
-            f.write(n.get_training_data(sx_shot, sy_shot, width_shot, height_shot))
+    if(SAVE):
+        cartella = "val"
+        #label_path = os.path.join("dataset", "labels", cartella, f"{i}.txt")
+        label_path = os.path.join("big_long", "labels", f"{i}_bl.txt")
+        with open(label_path, "w") as f:
+            for n in list_inside_screenshot:
+                n:Nota
+                f.write(n.get_training_data(sx_shot, sy_shot, width_shot, height_shot))
 
-    image_path = os.path.join("dataset", "images", cartella, f"{i}.jpg")
-    pygame.image.save(subsurf, image_path)
+        #image_path = os.path.join("dataset", "images", cartella, f"{i}.jpg")
+        image_path = os.path.join("big_long", "images", f"{i}_bl.jpg")
+        pygame.image.save(subsurf, image_path)
 
 
 running =True
