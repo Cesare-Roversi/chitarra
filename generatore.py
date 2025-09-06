@@ -1,5 +1,5 @@
 import random
-from spartito import Nota
+from classes.Spartito import Nota
 
 def find_next(lista_note, ix, corda):
     LIMIT = 3

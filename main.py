@@ -3,7 +3,7 @@ import cv2
 import random as rand
 import numpy as np
 import os
-from spartito import Spartito_chitarra, Nota
+from classes.Spartito import *
 from generatore import Generatore
 
 def cv2_show(s):
@@ -16,8 +16,8 @@ def cv2_show(s):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-WIDTH = 2560
-HEIGHT = 1440
+WIDTH = 1920
+HEIGHT = 1080
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
@@ -52,12 +52,12 @@ except OSError as e:
     # Cattura qualsiasi altro errore di sistema che potrebbe verificarsi
     print(f"Errore durante la creazione delle cartelle: {e}")
 
-SAVE = True
+SAVE = False
 SHOW = False
 if(SAVE and SHOW):
     exit(104)
     
-for i in range(500):
+for i in range(1):
     #*SCREENSHOT SETTINGS
     min_x, max_x = 0, 60 #LONG = 60
     min_y, max_y = 50, 100
