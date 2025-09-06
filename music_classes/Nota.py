@@ -27,9 +27,12 @@ class Nota():
         self.dest_arco = dest_arco
         self.dest_slide = dest_slide
         self.bend = bend
+        self.font_size = 30
 
-    def build(self, screen, x, y, font_size = 30):#visuale
+    def build(self, screen, x, y, font_size = None):#visuale
         self.screen = screen
+        if(font_size):
+            self.font_size = font_size
 
         self.center_x = x #il centro del testo
         self.center_y = y #il centro del testo

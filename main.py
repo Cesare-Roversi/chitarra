@@ -3,7 +3,7 @@ import cv2
 import random as rand
 import numpy as np
 import os
-from classes.Spartito import *
+from music_classes.Spartito import *
 from generatore import Generatore
 
 def cv2_show(s):
