@@ -4,11 +4,20 @@ import math
 from .Helpers import *
 pygame.init()
 
+
 class Separatore():
-    def build(self, screen, x, y, height):
+    def __init__(self, x:int, y:int, height:int):
+        # var logiche
         self.x = x
         self.y = y
         self.height = height
 
-    def show(self, screen):
-        aaline_thick(screen, (0,0,0), (self.x, self.y), (self.x, self.y+self.height), 1)
+        # var visuali
+        self.screen = None
+
+    def build(self, screen=None):
+        if screen:
+            self.screen = screen
+
+    def show(self):
+        aaline_thick(self.screen, (0,0,0), (self.x, self.y), (self.x, self.y + self.height), 1)

@@ -20,47 +20,56 @@ class Debug_rect():
             screen.blit(s, self.rect.topleft)
 
 class Nota():
-    def __init__(self, corda, tasto, durata = 1, dest_arco =None, dest_slide =None, bend =0):#logico
+    def __init__(self, corda, tasto, durata = 1, dest_arco =None, dest_slide =None, bend =0):
+        #var logiche
         self.corda = corda
         self.tasto = tasto
         self.durata = durata
         self.dest_arco = dest_arco
         self.dest_slide = dest_slide
         self.bend = bend
-        self.font_size = 30
 
-    def build(self, screen, x, y, font_size = None):#visuale
-        self.screen = screen
+        #var visuali [non x lavoro interno](inizializzate a default o None)
+        self.font_size = 30
+        self.screen = None
+        self.center_x = None #il centro del testo
+        self.center_y = None #il centro del testo
+        self.padding = 5
+        self.rect_behind = None
+        self.debug_rect = Debug_rect()
+
+        #padre?
+        self.spartito:"Spartito_chitarra" = None
+
+
+    def build(self, center_x = None, center_y = None, font_size = None, screen = None):#visuale
+        if(center_x):
+            self.center_x = center_x #il centro del testo
+        if(center_y):
+            self.center_y = center_y #il centro del testo
         if(font_size):
             self.font_size = font_size
-
-        self.center_x = x #il centro del testo
-        self.center_y = y #il centro del testo
+        if(screen):
+            self.screen = screen
 
         self.spartito:"Spartito_chitarra" = None #la riga dello spartito a cui appartiene
-        self.padding = 5
-        self.font = pygame.font.SysFont(None, font_size)
+        self.font = pygame.font.SysFont(None, self.font_size)
         self.text_surface = self.font.render(str(self.tasto), True, (0, 0, 0))
-        self.text_rect = self.text_surface.get_rect(center=(x,y))
+        self.text_rect = self.text_surface.get_rect(center=(center_x,center_y))
         
         left_i, top_i, width_i, height_i = self.get_bbox()
-        width_i += self.padding*normX(screen)
+        width_i += self.padding*normX(self.screen)
         self.rect_behind = pygame.Rect(left_i, top_i, width_i, height_i)
         self.rect_behind.center = (self.center_x, self.center_y)
-        # self.rect_behind = self.text_surface.get_rect(center=(x,y))
-        # self.rect_behind.width += self.padding*normX(screen)
-        # self.rect_behind.height += self.padding*normY(screen)
-        # self.rect_behind.center = (x,y)
 
         #debug rect
         bbox = self.get_bbox()
-        self.debug_rect = Debug_rect() #debug
-        self.debug_rect.build(screen, bbox)
+        self.debug_rect.build(self.screen, bbox)
 
-    def show(self, screen):
-        pygame.draw.rect(screen, (255,255,255), self.rect_behind)
-        screen.blit(self.text_surface, self.text_rect)
-        self.debug_rect.show(screen)
+    def show(self):
+        pygame.draw.rect(self.screen, (255,255,255), self.rect_behind)
+        self.screen.blit(self.text_surface, self.text_rect)
+        self.debug_rect.show(self.screen)
 
     def get_depth(self):
         return self.spartito.depth

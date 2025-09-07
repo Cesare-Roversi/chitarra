@@ -16,19 +16,17 @@ non faccio diurettamente col draw() perchè:
 
 class ButtonNota(Button.Button):
     def __init__(self, nota, grid_coo:tuple, width = 200, height = 200, delfault_color=(100, 100, 100), pressed_sx_color=(100,0,0), pressed_dx_color=(0,100,0), transparency=255, level=0):
-        super().__init__(width,height,delfault_color,pressed_sx_color,pressed_dx_color,transparency,level)
+        super().__init__(width,height,delfault_color,pressed_sx_color,pressed_dx_color,transparency,False,level)
         self.grid_coo = grid_coo
         self.nota:music_classes.Nota = nota
 
-    def build(self, x= None, y= None, grid_coo= None, screen= None):
-        if(x):
-            x = self.x
-        if(y):
-            y = self.y
+    def build(self, nota= None, x= None, y= None, grid_coo= None, screen= None):
+        super().build(x,y,screen)
         if(grid_coo):
-            grid_coo = self.grid_coo
-        if(screen):
-            self.screen
+            self.grid_coo = grid_coo
+        if(nota):
+            self.nota = nota
+        self.nota.build(self.x+self.width/2, self.y+self.height/2, None, screen)
 
 
     def handle_mouse(self):#complete override
@@ -42,55 +40,50 @@ class ButtonNota(Button.Button):
 
     
     def on_click_sx(self):
-        print("on_click_sx")
+        #print("on_click_sx")
+        pass
 
     def on_release_sx(self):
-        print("on_release_sx")
+        #print("on_release_sx")
+        if(not self.check_inside(self.nota.get_bbox())):
+            self.nota.build(self.x+self.width/2, self.y+self.height/2) 
 
     def on_click_dx(self):
-        print("on_click_dx")
+        #print("on_click_dx")
+        pass
 
     def on_release_dx(self):
-        print("on_release_dx")
+        #print("on_release_dx")
+        pass
 
     def on_hold_sx(self, mouse_pos):
-        #self.nota.
-        print("on_hold_sx")
+        self.nota.build(center_x=mouse_pos[0], center_y=mouse_pos[1])
+
+    def get_bbox(self):
+        return (self.x, self.y, self.width, self.height)
+
+    def get_note_bbox(self):
+        return self.nota.get_bbox()
+
+    def check_inside(self, bbox):
+        obj_x, obj_y, obj_w, obj_h = bbox
+        obj_x1, obj_y1 = obj_x+obj_w, obj_y+obj_h
+        sx, sy, sx1, sy1 = self.x, self.y, self.x+self.width, self.y+self.height
+
+        return not (obj_x1 < sx or obj_x > sx1 or obj_y1 < sy or obj_y > sy1)
+    
+    def check_click(self, pos):
+        cx, cy = pos
+        sx, sy, sx1, sy1 = self.x, self.y, self.x+self.width, self.y+self.height
+        return (cx >= sx and cx <= sx1 and cy >= sy and cy <= sy1)
 
 
-    def draw(self, screen):
-        tmp = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
-        r, g, b = self._color
-        tmp.fill((r, g, b, self.transparency))
-        screen.blit(tmp, (self.x, self.y))
-        if self.border_width > 0:
-            pygame.draw.rect(screen, self.border_color, self.rect, self.border_width)
+    def selected_color(self, v =True):
+        if(v):
+            self._color = self.pressed_sx_color
+        else:
+            self._color = self.default_color
 
-
-
-# --- Esempio di utilizzo in un loop pygame ---
-def main():
-    pygame.init()
-    screen = pygame.display.set_mode((640, 480))
-    clock = pygame.time.Clock()
-
-    btn = ButtonNota(200, 180, 240, 80, delfault_color=(30, 144, 255), transparency=220, level=1)
-
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            btn.handle_event(event)  # metodo per gestire gli eventi mouse (down/up)
-
-        btn.handle_mouse()
-        screen.fill((30, 30, 30))
-        btn.draw(screen)
-        pygame.display.flip()
-        clock.tick(60)
-
-    pygame.quit()
-
-if __name__ == "__main__":
-    main()
+    def show(self):
+        super().show()
+        self.nota.show()

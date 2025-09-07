@@ -9,6 +9,7 @@ from .Slide import *
 from .Bend import *
 pygame.init()
 
+#! PROBABILMENTE è DA RIFARE DA CAPO
 
 class Linee_spartito():
     def build(self, screen, x, y, distanza_tra_corde, width, depth):

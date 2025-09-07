@@ -2,7 +2,7 @@
 import pygame
 
 class Button:
-    def __init__(self, width, height, delfault_color=(100, 100, 100), pressed_sx_color=(100,0,0), pressed_dx_color=(0,100,0), transparency=255, level=0):
+    def __init__(self, width, height, delfault_color=(100, 100, 100), pressed_sx_color=(100,0,0), pressed_dx_color=(0,100,0), transparency=255, gestisci_colore= True, level=0):
         self.level = level
         self.x, self.y = None, None
         self.width, self.height = width, height
@@ -15,6 +15,7 @@ class Button:
         self.border_width = 0
         self.border_color = (0,0,0)
         self.screen = None
+        self.gestisci_colore = gestisci_colore
 
         # stato interno
         self._pressed_sx = False  # se il click sx è iniziato dentro il pulsante
@@ -34,23 +35,25 @@ class Button:
                     self.on_click_sx()
 
                 elif event.button == 3:  # destro premuto
-                    self._color = self.pressed_dx_color
+                    if(self.gestisci_colore):
+                        self._color = self.pressed_dx_color
                     self._pressed_dx = True
                     self.on_click_dx()
 
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:  # sinistro rilasciato
-                # se il click era iniziato dentro e il rilascio avviene dentro, chiamiamo on_release_sx
-                if self._pressed_sx and self.rect.collidepoint(event.pos):
+                if self._pressed_sx: #non importa dove rilasci
                     self.on_release_sx()
                 self._pressed_sx = False
-                self._color = self.default_color
+                if(self.gestisci_colore):
+                    self._color = self.default_color
 
             if event.button == 3:
-                if self._pressed_dx and self.rect.collidepoint(event.pos):
+                if self._pressed_dx and self.rect.collidepoint(event.pos): #importa dove rilasci, se non sei sul bottone non apri menu
                     self.on_release_dx()
                 self._pressed_dx = False
-                self._color = self.default_color
+                if(self.gestisci_colore):
+                    self._color = self.default_color
 
     
     def handle_mouse(self):
@@ -91,13 +94,13 @@ class Button:
 
 
 
-    def draw(self, screen):
+    def show(self):
         tmp = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         r, g, b = self._color
         tmp.fill((r, g, b, self.transparency))
-        screen.blit(tmp, (self.x, self.y))
+        self.screen.blit(tmp, (self.x, self.y))
         if self.border_width > 0:
-            pygame.draw.rect(screen, self.border_color, self.rect, self.border_width)
+            pygame.draw.rect(self.screen, self.border_color, self.rect, self.border_width)
 
 
 
@@ -120,7 +123,7 @@ def main():
 
         btn.handle_mouse()
         screen.fill((30, 30, 30))
-        btn.draw(screen)
+        btn.show(screen)
         pygame.display.flip()
         clock.tick(60)
 
