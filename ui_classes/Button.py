@@ -15,7 +15,7 @@ class Button:
         self.border_width = 0
         self.border_color = (0,0,0)
         self.screen = None
-        self.gestisci_colore = gestisci_colore
+        self.gestisci_colore = gestisci_colore #SE TRUE, il colore viene gestito internamente, se false è impostato dall'esterno
 
         # stato interno
         self._pressed_sx = False  # se il click sx è iniziato dentro il pulsante
@@ -30,7 +30,8 @@ class Button:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.rect.collidepoint(event.pos):
                 if event.button == 1:  # sinistro premuto
-                    self._color = self.pressed_sx_color
+                    if(self.gestisci_colore):
+                        self._color = self.pressed_sx_color
                     self._pressed_sx = True
                     self.on_click_sx()
 

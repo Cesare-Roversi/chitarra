@@ -45,8 +45,9 @@ class ButtonNota(Button.Button):
 
     def on_release_sx(self):
         #print("on_release_sx")
-        if(not self.check_inside(self.nota.get_bbox())):
-            self.nota.build(self.x+self.width/2, self.y+self.height/2) 
+        # if(not self.check_inside(self.nota.get_bbox())):
+        #     self.nota.build(self.x+self.width/2, self.y+self.height/2) 
+        pass
 
     def on_click_dx(self):
         #print("on_click_dx")
@@ -84,6 +85,16 @@ class ButtonNota(Button.Button):
         else:
             self._color = self.default_color
 
+    def set_internal_note(self, nota):
+        self.nota = nota
+        self.nota.build(self.x+self.width/2, self.y+self.height/2) 
+
+    def steal_internal_note(self):
+        n = self.nota
+        self.nota = None
+        return n
+
     def show(self):
         super().show()
-        self.nota.show()
+        if(self.nota):
+            self.nota.show()
