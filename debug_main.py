@@ -7,16 +7,16 @@ screen = pygame.display.set_mode((640, 480))
 clock = pygame.time.Clock()
 
 nota = Nota(0,0,1)
-btn = ButtonNota(nota, (0,0), 240, 80, delfault_color=(30, 144, 255), transparency=220, level=1)
+btn = ButtonNota(nota, (0,0), 100, 100, delfault_color=(30, 144, 255), transparency=220, level=1)
 btn.build(None, 300, 300, (0,0), screen)
 
 nota1 = Nota(0,1,1)
-btn1 = ButtonNota(nota1, (0,0), 240, 80, delfault_color=(30, 144, 255), transparency=220, level=1)
+btn1 = ButtonNota(nota1, (0,0), 100, 100, delfault_color=(30, 144, 255), transparency=220, level=1)
 btn1.build(None, 100, 100, (0,0), screen)
 
 print(nota1.get_bbox())
 
-def handler_spartito(event, keys, clicked_note, btns, selected_btns):
+def handler_spartito(event, keys, clicked_btn, btns, selected_btns):
     #key list
     CTRL = keys & pygame.KMOD_CTRL
 
@@ -24,27 +24,25 @@ def handler_spartito(event, keys, clicked_note, btns, selected_btns):
         print("MOUSE DOWN")
         found = False
         for ix, dest in enumerate(btns):
-            if dest.check_click(event.pos):  # assumiamo che esista
-                clicked_note = dest
-                found = True
-                
-        if(not found):
+            if dest.check_click(event.pos):
+                clicked_btn = dest
+                found = True   
+        if(found and not CTRL):
+            if clicked_btn in selected_btns:
+                selected_btns.remove(clicked_btn)
+                clicked_btn.selected_color(False)
+            else:
+                clicked_btn.selected_color()
+                selected_btns.add(clicked_btn)
+        elif(not found):
             for s in selected_btns:
                 s.selected_color(False)
-            clicked_note = None
+            clicked_btn = None
             selected_btns.clear()
 
 
     elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # left mouse up
         print("MOUSE UP")
-        if clicked_note and clicked_note.check_click(event.pos):
-            if clicked_note in selected_btns:
-                selected_btns.remove(clicked_note)
-                clicked_note.selected_color(False)
-            else:
-                clicked_note.selected_color()
-                selected_btns.add(clicked_note)
-            print(f"selected_notes: {selected_btns}")
 
         print(f"selected_notes: {selected_btns}")
         found = False
@@ -56,23 +54,24 @@ def handler_spartito(event, keys, clicked_note, btns, selected_btns):
                 s:ButtonNota
                 print(f"nota: {s.get_note_bbox()}")
                 if(s != n and n.check_inside(s.get_note_bbox())):
+                    print("diebymyhand")
                     #n.set_internal_note(s.steal_internal_note())
                     found = True
                     deltaX = n.grid_coo[0]-s.grid_coo[0]
                     deltaY = n.grid_coo[1]-s.grid_coo[1]
-                    for s in selected_notes:
+                    for s in selected_btns:
                         new_posX = s.grid_coo[0]+deltaX
                         new_posY = s.grid_coo[1]+deltaY
                         #btns_grid[new_posX][new_posY].set_iternal_note(s.steal_internal_note())
 
 
-    return clicked_note
+    return clicked_btn
 
-notes = set()
-notes.update([btn, btn1])
+btns = set()
+btns.update([btn, btn1])
 
-selected_notes = set()
-clicked_note = None
+selected_btns = set()
+clicked_btn = None
 running = True
 while running:
     for event in pygame.event.get():
@@ -80,18 +79,18 @@ while running:
             running = False
 
         #internal notes handler
-        for b in notes :
+        for b in btns :
             b.handle_event(event)
         keys = pygame.key.get_mods()
-        clicked_note = handler_spartito(event, keys, clicked_note, notes, selected_notes) #premere un bottone è un evento? boh
+        clicked_btn = handler_spartito(event, keys, clicked_btn, btns, selected_btns) #premere un bottone è un evento? boh
 
     #internal notes mouse
-    for b in notes :
+    for b in btns :
         b.handle_mouse()
 
     #show
     screen.fill((30, 30, 30))
-    for b in notes:
+    for b in btns:
         b.show()
     pygame.display.flip()
     clock.tick(60)
@@ -99,6 +98,6 @@ while running:
 pygame.quit()
 
 
-notes = set()
-selected_notes = set()
-clicked_note = None
+btns = set()
+selected_btns = set()
+clicked_btn = None

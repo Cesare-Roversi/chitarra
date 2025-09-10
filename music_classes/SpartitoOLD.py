@@ -25,7 +25,7 @@ class Linee_spartito():
 
 
 
-class Spartito_chitarra():
+class Spartito_chitarraOLD():
     def __init__(self, tempo = 1, list_note = []):
         self.list_note:list[list] = list_note
         self.tempo = tempo

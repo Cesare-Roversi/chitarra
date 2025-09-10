@@ -3,7 +3,7 @@ import cv2
 import random as rand
 import numpy as np
 import os
-from music_classes.Spartito import *
+from music_classes.SpartitoOLD import *
 from generatore import Generatore
 
 def cv2_show(s):
@@ -73,7 +73,7 @@ for i in range(1):
     
     #builds everything
     list_note = Generatore()
-    spartito = Spartito_chitarra(list_note=list_note)
+    spartito = Spartito_chitarraOLD(list_note=list_note)
     spartito.build(screen, 50, 100, WIDTH - 50)
 
     #trova la lista di note nello screen    
