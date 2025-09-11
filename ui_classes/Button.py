@@ -84,11 +84,11 @@ class Button:
         print("on_hold_sx")
 
 
-    def build(self, x, y, screen = None): #determina la posizione che è relativa al padre (cambia spesso) / tutta la merda che è riboldata dal padre
-        if(x):
-            self.x = x
-        if(y):
-            self.y = y
+    def build(self, cx, cy, screen = None): #determina la posizione che è relativa al padre (cambia spesso) / tutta la merda che è riboldata dal padre
+        if(cx):
+            self.x = cx-self.height/2
+        if(cy):
+            self.y = cy-self.width/2
         if(screen):
             self.screen = screen
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)

@@ -1,19 +1,20 @@
 import pygame
-from ui_classes import *
+from ui_classes.ButtonNota import *
 from music_classes import Nota
 
 pygame.init()
-screen = pygame.display.set_mode((1500, 1000))
+screen = pygame.display.set_mode((640, 480))
 clock = pygame.time.Clock()
 
 nota = Nota(0,0,1)
+btn = ButtonNota(nota, (0,0), 100, 100, delfault_color=(30, 144, 255), transparency=220, level=1)
+btn.build(None, 300, 300, (0,0), screen)
+
 nota1 = Nota(0,1,1)
-notes = [[nota], [nota1]]
+btn1 = ButtonNota(nota1, (0,0), 100, 100, delfault_color=(30, 144, 255), transparency=220, level=1)
+btn1.build(None, 100, 100, (0,0), screen)
 
-
-spartito_chitarra = SparitoChitarra(4,4)
-spartito_chitarra.build(50, 50, notes, screen)
-
+print(nota1.get_bbox())
 
 def handler_spartito(event, keys, clicked_btn, btns, selected_btns):
     #key list
@@ -67,7 +68,7 @@ def handler_spartito(event, keys, clicked_btn, btns, selected_btns):
     return clicked_btn
 
 btns = set()
-# btns.update([btn, btn1])
+btns.update([btn, btn1])
 
 selected_btns = set()
 clicked_btn = None
@@ -77,17 +78,20 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        #internal notes event handler
-        spartito_chitarra.handle_event(event)
+        #internal notes handler
+        for b in btns :
+            b.handle_event(event)
         keys = pygame.key.get_mods()
         clicked_btn = handler_spartito(event, keys, clicked_btn, btns, selected_btns) #premere un bottone è un evento? boh
 
-    #internal notes mouse handler
-    spartito_chitarra.handle_mouse()
+    #internal notes mouse
+    for b in btns :
+        b.handle_mouse()
 
     #show
-    screen.fill((255, 255, 255))
-    spartito_chitarra.show()
+    screen.fill((30, 30, 30))
+    for b in btns:
+        b.show()
     pygame.display.flip()
     clock.tick(60)
 

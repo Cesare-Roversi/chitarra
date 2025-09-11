@@ -14,7 +14,7 @@ non faccio diurettamente col draw() perchè:
 '''
 
 
-class ButtonNota(Button.Button):
+class ButtonNota(Button):
     def __init__(self, nota, grid_coo:tuple, width = 200, height = 200, delfault_color=(100, 100, 100), pressed_sx_color=(100,0,0), pressed_dx_color=(0,100,0), transparency=255, level=0):
         super().__init__(width,height,delfault_color,pressed_sx_color,pressed_dx_color,transparency,False,level)
         self.grid_coo = grid_coo
@@ -26,7 +26,8 @@ class ButtonNota(Button.Button):
             self.grid_coo = grid_coo
         if(nota):
             self.nota = nota
-        self.nota.build(self.x+self.width/2, self.y+self.height/2, None, screen)
+        if(self.nota):
+            self.nota.build(self.x+self.width/2, self.y+self.height/2, None, screen)
 
 
     def handle_mouse(self):#complete override
@@ -58,7 +59,8 @@ class ButtonNota(Button.Button):
         pass
 
     def on_hold_sx(self, mouse_pos):
-        self.nota.build(center_x=mouse_pos[0], center_y=mouse_pos[1])
+        if(self.nota):
+            self.nota.build(center_x=mouse_pos[0], center_y=mouse_pos[1])
 
     def get_bbox(self):
         return (self.x, self.y, self.width, self.height)
@@ -87,7 +89,10 @@ class ButtonNota(Button.Button):
 
     def set_internal_note(self, nota):
         self.nota = nota
-        self.nota.build(self.x+self.width/2, self.y+self.height/2) 
+        try:
+            self.nota.build(self.x+self.width/2, self.y+self.height/2) 
+        except:
+            pass
 
     def steal_internal_note(self):
         n = self.nota

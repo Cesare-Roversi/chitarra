@@ -1,19 +1,50 @@
 from music_classes import *
 from ui_classes import *
 
-class SparitoChitarra():
+class Linee_spartito():
     def __init__(self):
+        self.depth = 0
+        self.screen = None
+
+    def build(self, x, y, distanza_tra_corde, width, screen):
+        if(x):
+            self.x = x
+        if(y):
+            self.y = y
+        if(distanza_tra_corde):
+            self.distanza_tra_corde = distanza_tra_corde
+        if(width):
+            self.width = width
+        if(screen):
+            self.screen = screen
+
+    def show(self):
+        for i in range(6):
+            aaline_thick(self.screen, (0,0,0), (self.x, self.y+self.distanza_tra_corde*i), (self.width, self.y+self.distanza_tra_corde*i), 1)
+
+
+
+class SparitoChitarra():
+    def __init__(self, number_of_beats, beat_value):
+        #logica
+        self.number_of_beats = number_of_beats
+        self.beat_value = beat_value
+
+        #visuale
+        self.level =0
         self.x = None
         self.y = None
-        self.grid:list[list[ButtonNota]]
+        self.grid:list[list[ButtonNota]] = []
+        self.separatori:list[Separatore] = []
+        self.linee_spartito:list[Linee_spartito] = []
         self.tempo = 1
         self.width = 1000
-        self.distanza_tra_corde = 10 #MID = 10
+        self.distanza_tra_corde = 20 #MID = 10
         self.distanza_tra_note = 15 #MID = 15
         self.distanza_separatore = 30 #MID = 30
         self.distanza_tra_spartiti = 100
         self.screen = None
-        pass
+        
 
     def build(self, x= None, y= None, list_groups:list[list[Nota]] = None, screen = None):
         if(x):
@@ -24,22 +55,65 @@ class SparitoChitarra():
             self.screen = screen
 
         if(list_groups):
-            for gx in range(len(list_groups)):
-                for gy in range(6):
-                    self.grid[gx][gy] = ButtonNota(None, (gx,gy), 100, 100)
+            for grid_x in range(len(list_groups)):
+                self.grid.append([])
+                for grid_y in range(6):
+                    self.grid[grid_x].append(ButtonNota(None, (grid_x,grid_y), 20, 20, delfault_color=(100,100,0)))
             
-                for n in list_groups[gx]:
-                    gy = n.corda
-                    self.grid[gx][gy].set_internal_note(n)
+                for n in list_groups[grid_x]:
+                    grid_y = n.corda
+                    self.grid[grid_x][grid_y].set_internal_note(n)
 
+        #visuale
+        self.linee_spartito.append(Linee_spartito())
+        self.linee_spartito[0].build(self.x, self.y, self.distanza_tra_corde*normY(self.screen), self.width, self.screen)
+        
+        nx = self.x
+        ny = self.y
+        limit = self.number_of_beats*self.beat_value
         counter = 0
-        for gx in range(len(self.grid)):
-            for gy in range(6):
-                nx = self.x+gx*self.distanza_tra_note*normX(self.screen)
-                ny = self.y+gy*normY(self.screen)
+        for grid_x in range(len(self.grid)):
+            for grid_y in range(6):
+                if(counter >= limit):
+                    counter = 0
+                    nx += self.distanza_separatore
+                    if(nx > self.x+self.width):
+                        nx = self.x
+                        ny = self.y+6*normY(self.screen)+self.distanza_tra_spartiti*normY(self.screen)
+                        s = Separatore()
+                        s.build(nx, ny, self.distanza_tra_corde*5, screen)
+                        self.separatori.append(s)
+
+                ny = self.y+grid_y*self.distanza_tra_corde*normY(self.screen)
                 if(nx > self.x+self.width):
                     nx = self.x
                     ny = self.y+6*normY(self.screen)+self.distanza_tra_spartiti*normY(self.screen)
-                self.grid[gx][gy].build(None, nx, ny, (gx, gy), screen)
+                
+                self.grid[grid_x][grid_y].build(None, nx, ny, (grid_x, grid_y), screen=self.screen)
+
+            #tra una colonna e l'altra
+            nx += self.x+self.distanza_tra_note*normX(self.screen)
 
     
+    def show(self):
+        for l in self.linee_spartito:
+            l.show()
+        for s in self.separatori:
+            s.show()
+        for x in range(len(self.grid)):
+            for y in range(6):
+                #print(f"screen: {self.grid[x][y].screen}")
+                self.grid[x][y].show()
+
+
+    def handle_mouse(self):
+        for g in self.grid:
+            for b in g:
+                b.handle_mouse()
+
+
+    def handle_event(self, event):
+        for g in self.grid:
+            for b in g:
+                b.handle_event(event)
+
