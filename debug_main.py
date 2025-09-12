@@ -1,6 +1,7 @@
 import pygame
 from ui_classes import *
 from music_classes import Nota
+from custom_exceptions import *
 
 pygame.init()
 screen = pygame.display.set_mode((1500, 1000))
@@ -34,8 +35,8 @@ def handler_spartito(event, keys, clicked_btn, btns, selected_btns):
                 clicked_btn.selected_color()
                 selected_btns.add(clicked_btn)
         elif(not found):
-            for s in selected_btns:
-                s.selected_color(False)
+            for sel_btn in selected_btns:
+                sel_btn.selected_color(False)
             clicked_btn = None
             selected_btns.clear()
 
@@ -45,29 +46,28 @@ def handler_spartito(event, keys, clicked_btn, btns, selected_btns):
 
         print(f"selected_notes: {selected_btns}")
         found = False
-        for n in btns:
+        for any_btn in btns:
             if(found):
                 break
-            for s in selected_btns:
-                n:ButtonNota
-                s:ButtonNota
-                print(f"nota: {s.get_note_bbox()}")
-                if(s != n and n.check_inside(s.get_note_bbox())):
-                    print("diebymyhand")
-                    #n.set_internal_note(s.steal_internal_note())
-                    found = True
-                    deltaX = n.grid_coo[0]-s.grid_coo[0]
-                    deltaY = n.grid_coo[1]-s.grid_coo[1]
-                    for s in selected_btns:
-                        new_posX = s.grid_coo[0]+deltaX
-                        new_posY = s.grid_coo[1]+deltaY
-                        #btns_grid[new_posX][new_posY].set_iternal_note(s.steal_internal_note())
+            for sel_btn in selected_btns:
+                any_btn:ButtonNota
+                sel_btn:ButtonNota
+                try:
+                    if(sel_btn != any_btn and any_btn.check_inside(sel_btn.get_note_bbox())):
+                        print("diebymyhand")
+                        #n.set_internal_note(s.steal_internal_note())
+                        found = True
+                        deltaX = any_btn.grid_coo[0]-sel_btn.grid_coo[0]
+                        deltaY = any_btn.grid_coo[1]-sel_btn.grid_coo[1]
+                        for sel_btn in selected_btns:
+                            spartito_chitarra.set_pos_in_grid(sel_btn, deltaX, deltaY)
+                except NotaAssente:
+                    pass
 
 
     return clicked_btn
 
-btns = set()
-# btns.update([btn, btn1])
+btns = spartito_chitarra.get_btns_set()
 
 selected_btns = set()
 clicked_btn = None

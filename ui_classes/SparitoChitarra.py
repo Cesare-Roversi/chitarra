@@ -117,3 +117,25 @@ class SparitoChitarra():
             for b in g:
                 b.handle_event(event)
 
+
+    def get_btns_set(self):
+        ris:set[ButtonNota] = set()
+        for g in self.grid:
+            for b in g:
+                ris.add(b)
+        return ris
+    
+
+    def set_pos_in_grid(self, btn:ButtonNota, delta_x:int, delta_y:int):
+        Ox, Oy = btn.grid_coo
+        Nx = Ox+delta_x
+        Ny = Oy+delta_y
+        if(Ny <= 6 and Nx <= 1): #!NO è UN ERRORE
+            #TODO manca controllo Nx espansione
+            new_btn:ButtonNota = self.grid[Nx][Ny]
+            new_btn.build(nota=btn.nota)
+            print(f"new_btn: {new_btn}")
+
+        btn.nota = None
+
+

@@ -2,6 +2,7 @@ from __future__ import annotations
 import pygame
 from . import Button
 import music_classes
+from custom_exceptions import *
 print(music_classes.Nota)
 '''
 build()
@@ -66,7 +67,10 @@ class ButtonNota(Button):
         return (self.x, self.y, self.width, self.height)
 
     def get_note_bbox(self):
-        return self.nota.get_bbox()
+        if(self.nota):
+            return self.nota.get_bbox()
+        else:
+            raise NotaAssente()
 
     def check_inside(self, bbox):
         obj_x, obj_y, obj_w, obj_h = bbox
