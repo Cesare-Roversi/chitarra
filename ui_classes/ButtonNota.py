@@ -47,7 +47,7 @@ class ButtonNota(Button):
 
     def on_release_sx(self):
         #print("on_release_sx")
-        # if(not self.check_inside(self.nota.get_bbox())):
+        # if(not self.check_overlap(self.nota.get_bbox())):
         #     self.nota.build(self.x+self.width/2, self.y+self.height/2) 
         pass
 
@@ -72,7 +72,7 @@ class ButtonNota(Button):
         else:
             raise NotaAssente()
 
-    def check_inside(self, bbox):
+    def check_overlap(self, bbox):
         obj_x, obj_y, obj_w, obj_h = bbox
         obj_x1, obj_y1 = obj_x+obj_w, obj_y+obj_h
         sx, sy, sx1, sy1 = self.x, self.y, self.x+self.width, self.y+self.height
@@ -97,11 +97,6 @@ class ButtonNota(Button):
             self.nota.build(self.x+self.width/2, self.y+self.height/2) 
         except:
             pass
-
-    def steal_internal_note(self):
-        n = self.nota
-        self.nota = None
-        return n
 
     def show(self):
         super().show()
