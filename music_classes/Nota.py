@@ -127,3 +127,6 @@ class Nota():
         bbox_height_norm = height_bbox / height_shot
 
         return f"{self.tasto} {x_center_norm:.6f} {y_center_norm:.6f} {bbox_width_norm:.6f} {bbox_height_norm:.6f}\n"
+    
+    def __str__(self):
+        return f"[tasto={self.tasto}, corda={self.corda}, durata={self.durata}]"

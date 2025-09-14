@@ -1,3 +1,6 @@
+import inspect
+from functools import partial
+
 class printv():
     def __init__(self, *vars, stop_in_cicle=False):
         self.stop_in_cicle = stop_in_cicle
@@ -30,7 +33,7 @@ class printv():
                             st += ", "
                     st += "]"
                     print(st)
-                if(tipo == dict):
+                elif(tipo == dict):
                     sottotipi_keys = set()
                     sottotipi_vals = set()
                     obj:dict
@@ -60,13 +63,48 @@ class printv():
                             st += ", "
                     st += "]"
                     print(st)
+                else:
+                    print(f"Type: {tipo.__name__}")
                 print("Value:", obj)
                 print("---")
 
 
 
 
+def print_stack():
+    stack_length:int = len(inspect.stack())
+    
+    print(f"\n@@@PRINT STACK of function: {inspect.stack()[1].function}")
+    for ix in range(2, stack_length):
+        caller = inspect.stack()[ix]  # Get the caller's stack frame
+        caller_function = caller.function  # Get the function name
+        caller_filename = caller.filename  # Get the filename
+        caller_line = caller.lineno  # Get the line number
+        print(f"Called by function: {caller_function}, in file: {caller_filename}, at line: {caller_line}")
+    print()
 
+
+
+class exo():
+    def __init__(self):
+        self.dic = dict()
+        self.limit = 1
+
+    def exo(self, *args):
+        if args[0] not in self.dic:
+            partial_fun = partial(args[0], *args[1:])
+            self.dic[args[0]] = (partial_fun, 0)
+
+        for fun, tup in self.dic.items():
+            partial_fun = tup[0]
+            ct = tup [1]
+            if ct < self.limit:
+                partial_fun()
+                self.dic[fun] = (partial_fun, ct+1)
+
+
+def quack(a):
+    print(f"quack {a}")
 if __name__ == "__main__":
     #prove
     d = dict({"c": 4, "d": 3.4})
@@ -76,3 +114,8 @@ if __name__ == "__main__":
 
     for i in range(10):
         pr.printv("d",d,"s",s)
+
+    par = 1
+    p = exo()
+    for i in range(2):
+        p.exo(quack, par)

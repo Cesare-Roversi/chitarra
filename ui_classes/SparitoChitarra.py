@@ -125,6 +125,10 @@ class SparitoChitarra():
                 ris.add(b)
         return ris
     
+    def print_grid_debug(self):
+        for x in range(len(self.grid)):
+            for y in range(len(self.grid[x])):
+                print(self.grid[x][y])
 
     def set_pos_in_grid(self, btn:ButtonNota, delta_x:int, delta_y:int):
         Ox, Oy = btn.grid_coo

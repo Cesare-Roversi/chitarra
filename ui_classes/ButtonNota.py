@@ -30,15 +30,20 @@ class ButtonNota(Button):
         if(self.nota):
             self.nota.build(self.x+self.width/2, self.y+self.height/2, None, screen)
 
+    def show(self):
+        super().show()
+        if(self.nota):
+            self.nota.show()
 
     def handle_mouse(self):#complete override
         mouse_pos = pygame.mouse.get_pos()
         mouse_buttons = pygame.mouse.get_pressed()
 
-        # mouse_buttons[0] è True se bottone sinistro tenuto
-        mouse_sx, mouse_dx = mouse_buttons[0], mouse_buttons[2]
-        if(self._pressed_sx):
-            self.on_hold_sx(mouse_pos)
+        delta = (0,0)
+        if(self._pressed_sx): #questa varaibile è settata da handle event della classe button
+            delta = self.on_hold_sx(mouse_pos)
+
+        return delta #posizione iniziale nota - posizione attuale mouse
 
     
     def on_click_sx(self):
@@ -62,6 +67,11 @@ class ButtonNota(Button):
     def on_hold_sx(self, mouse_pos):
         if(self.nota):
             self.nota.build(center_x=mouse_pos[0], center_y=mouse_pos[1])
+
+        cx =self.x+self.width/2
+        cy =self.y+self.height/2
+        delta = (mouse_pos[0]-cx, mouse_pos[1]-cy)
+        return delta
 
     def get_bbox(self):
         return (self.x, self.y, self.width, self.height)
@@ -98,7 +108,7 @@ class ButtonNota(Button):
         except:
             pass
 
-    def show(self):
-        super().show()
-        if(self.nota):
-            self.nota.show()
+    
+    def __str__(self):
+        return f"coo= {self.grid_coo}, nota= {self.nota}"
+    
