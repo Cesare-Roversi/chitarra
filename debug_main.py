@@ -9,14 +9,16 @@ screen = pygame.display.set_mode((1500, 1000))
 clock = pygame.time.Clock()
 
 nota0 = Nota(0,0,1)
-nota1 = Nota(0,1,1)
+nota1 = Nota(1,1,1)
 nota3 = Nota(0,2,1)
-nota4 = Nota(0,3,1)
+nota4 = Nota(1,3,1)
 notes = [[nota0, nota1], [nota3, nota4]]
 
 
 spartito_chitarra = SparitoChitarra(4,4)
 spartito_chitarra.build(50, 50, notes, screen)
+
+spartito_chitarra.print_grid()
 
 
 def handler_spartito(event, keys, btns:set[ButtonNota], selected_btns:set[ButtonNota], box_select_start_coo:tuple[float,float], box_select_active:bool, box_selection:BoxSelection):
