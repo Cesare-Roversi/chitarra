@@ -110,5 +110,7 @@ class ButtonNota(Button):
 
     
     def __str__(self):
-        return f"coo= {self.grid_coo}, Nota=[ {self.nota} ]"
+        return f"ButtonNota=[ coo= {self.grid_coo}, {self.nota} ]"
+    def __repr__(self):
+        return self.__str__()
     

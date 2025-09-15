@@ -129,7 +129,7 @@ class SparitoChitarra():
         print("---GRID DEBUG")
         for x in range(len(self.grid)):
             for y in range(len(self.grid[x])):
-                print(f"ButtonNota=[ {self.grid[x][y]} ]")
+                print(self.grid[x][y])
         print("---")
 
     def set_pos_in_grid(self, btn:ButtonNota, delta_x:int, delta_y:int):
