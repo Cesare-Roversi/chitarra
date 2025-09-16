@@ -1,6 +1,6 @@
 import pygame
 from ui_classes import *
-from music_classes import Nota
+from music_classes import NotaLogica
 from custom_exceptions import *
 from DebugTools import *
 
@@ -8,10 +8,10 @@ pygame.init()
 screen = pygame.display.set_mode((1500, 1000))
 clock = pygame.time.Clock()
 
-nota0 = Nota(0,0,1)
-nota1 = Nota(1,1,1)
-nota3 = Nota(0,2,1)
-nota4 = Nota(1,3,1)
+nota0 = NotaLogica(0,0,1)
+nota1 = NotaLogica(1,1,1)
+nota3 = NotaLogica(0,2,1)
+nota4 = NotaLogica(1,3,1)
 notes = [[nota0, nota1], [nota3, nota4]]
 
 

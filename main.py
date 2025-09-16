@@ -80,7 +80,7 @@ for i in range(1):
     list_inside_screenshot = []
     for g in list_note:
         for n in g:
-            n:Nota
+            n:NotaLogica
             sx_n, sy_n, w, h = n.get_bbox()
             ex_n, ey_n = sx_n+w, sy_n+h
 
@@ -104,7 +104,7 @@ for i in range(1):
         label_path = os.path.join("big_long", "labels", f"{i}_bl.txt")
         with open(label_path, "w") as f:
             for n in list_inside_screenshot:
-                n:Nota
+                n:NotaLogica
                 f.write(n.get_training_data(sx_shot, sy_shot, width_shot, height_shot))
 
         #image_path = os.path.join("dataset", "images", cartella, f"{i}.jpg")

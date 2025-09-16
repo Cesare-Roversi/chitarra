@@ -1,3 +1,3 @@
-from .Nota import Nota
+from .Nota import NotaLogica
 from .Helpers import *
 from .Separatore import *

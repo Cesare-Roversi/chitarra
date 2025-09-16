@@ -54,7 +54,7 @@ class Spartito_chitarraOLD():
         count_durata_note = 0
         for note_contemporanee in self.list_note:
 
-            note_contemporanee:Nota
+            note_contemporanee:NotaLogica
             count_durata_note += note_contemporanee[0].durata
             if(count_durata_note > self.tempo):
                 count_durata_note = 0
@@ -83,7 +83,7 @@ class Spartito_chitarraOLD():
         #*archi, slide, bend
         for note in self.list_note:
             for nota in note:
-                nota:Nota
+                nota:NotaLogica
                 if(nota.dest_arco != None):
                     arco = Arco()
                     arco.build(screen, nota, nota.dest_arco)

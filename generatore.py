@@ -1,5 +1,5 @@
 import random
-from music_classes.SpartitoOLD import Nota
+from music_classes.SpartitoOLD import NotaLogica
 
 def find_next(lista_note, ix, corda):
     LIMIT = 3
@@ -8,7 +8,7 @@ def find_next(lista_note, ix, corda):
         if(count >= LIMIT):
             break
         for n in lista_note[g_ix]:
-            n:Nota
+            n:NotaLogica
             if(n.corda == corda):
                 return n 
         count +=1
@@ -25,7 +25,7 @@ def Generatore():
             r = random.uniform(0, 1)
             if(r <= 0.25):
                 fret = random.randint(0, 30)  # 0 e 30 inclusi
-                nota = Nota(corda, fret, 0.25)
+                nota = NotaLogica(corda, fret, 0.25)
                 gruppo.append(nota)
 
         if(len(gruppo) != 0):
@@ -35,7 +35,7 @@ def Generatore():
     for gruppo_ix in range(len(lista_note)):
         gruppo = lista_note[gruppo_ix]
         for nota in gruppo:
-            nota:Nota
+            nota:NotaLogica
             r_arco = random.uniform(0, 1)
             if(r_arco <= 0.5):
                 next_nota = find_next(lista_note, gruppo_ix, nota.corda)

@@ -82,7 +82,7 @@ class SparitoChitarra():
 
         
 
-    def build(self, x= None, y= None, list_groups:list[list[Nota]] = None, screen = None):
+    def build(self, x= None, y= None, list_groups:list[list[NotaLogica]] = None, screen = None):
         if(x):
             self.x = x
         if(y):

@@ -3,7 +3,7 @@ import pygame
 from . import Button
 import music_classes
 from custom_exceptions import *
-print(music_classes.Nota)
+print(music_classes.NotaLogica)
 '''
 build()
 tutti i cambiamenti che dipendono dall'aver ribildato il padre
@@ -19,7 +19,7 @@ class ButtonNota(Button):
     def __init__(self, nota, grid_coo:tuple, width = 200, height = 200, delfault_color=(100, 100, 100), pressed_sx_color=(100,0,0), pressed_dx_color=(0,100,0), transparency=255, level=0):
         super().__init__(width,height,delfault_color,pressed_sx_color,pressed_dx_color,transparency,False,level)
         self.grid_coo = grid_coo
-        self.nota:music_classes.Nota = nota
+        self.nota:music_classes.NotaLogica = nota
 
     def build(self, nota= None, x= None, y= None, grid_coo= None, screen= None):
         super().build(x,y,screen)
