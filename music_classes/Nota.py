@@ -1,7 +1,12 @@
 from __future__ import annotations
 import pygame
 import math
-from .Helpers import *
+try:
+    from .Helpers import *
+except:
+    pass
+
+
 pygame.init()
 
 class Debug_rect():
@@ -28,6 +33,7 @@ class Nota():
         self.dest_arco = dest_arco
         self.dest_slide = dest_slide
         self.bend = bend
+        self.tono, self.ottava = self.converti_nota(corda, tasto)
 
         #var visuali [non x lavoro interno](inizializzate a default o None)
         self.font_size = 30
@@ -42,6 +48,20 @@ class Nota():
         self.spartito:"Spartito_chitarra" = None
 
 
+    #?LOGIC ONLY
+    def converti_nota(self, corda, tasto):
+        scala_cromatica = ["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"]
+        intonazione = {1: "E", 2: "B", 3: "G", 4: "D", 5: "A", 6: "E"}
+        ottava_iniziale = {1: 4, 2: 3, 3: 3, 4: 3, 5: 2, 6: 2}
+        nota_iniziale = intonazione[corda]
+        cr_ix = scala_cromatica.index(nota_iniziale)
+        tono_ix = (cr_ix+tasto)%12
+        tono = scala_cromatica[tono_ix]
+        salto_di_un_ottava = math.floor((cr_ix+tasto)/12)
+        ottava = ottava_iniziale[corda]+salto_di_un_ottava
+        return (tono, ottava)
+
+    #?VISUAL ONLY
     def build(self, center_x = None, center_y = None, font_size = None, screen = None):#visuale
         if(center_x):
             self.center_x = center_x #il centro del testo
@@ -73,13 +93,6 @@ class Nota():
 
     def get_depth(self):
         return self.spartito.depth
-    
-    def set_debug_rect_color(self, color):
-        self.debug_rect.color = color
-        self.debug_rect.is_show = True
-    
-    def show_debug_rect(self, show = True):
-        self.debug_rect.is_show = show
     
     def get_bbox(self): #* x assoluta, y assoluta, width, height
         # prendi metriche del carattere (lista, una tupla per ogni char)
@@ -114,6 +127,15 @@ class Nota():
         height_i= max(0, int(round(bottom - top)))
 
         return (left_i, top_i, width_i, height_i)
+
+
+    #?DEBUG ONLY
+    def set_debug_rect_color(self, color):
+        self.debug_rect.color = color
+        self.debug_rect.is_show = True
+    
+    def show_debug_rect(self, show = True):
+        self.debug_rect.is_show = show
     
     def get_training_data(self, left_shot, top_shot, width_shot, height_shot):
         abs_left_bbox, abs_top_bbox, width_bbox, height_bbox = self.get_bbox()
@@ -132,3 +154,9 @@ class Nota():
         return f"Nota=[ tasto={self.tasto}, corda={self.corda}, durata={self.durata} ]"
     def __repr__(self):
         return self.__str__()
+    
+
+if __name__ == "__main__":
+    nota = Nota(4, 5)
+    print(nota.tono)
+    print(nota.ottava)
